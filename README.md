@@ -281,3 +281,9 @@ The `uploads/` folder is mounted as a volume so uploaded files persist across co
 volumes:
   - ./monitoring-app-nest/uploads:/app/uploads
 ```
+
+---
+
+## Credits
+
+Built by **[Mochammad Naufal Ihza Syahzada]** with AI assistance from [Claude](https://claude.ai) and [ChatGPT](https://chatgpt.com).
