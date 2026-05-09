@@ -6,15 +6,15 @@ NestJS REST API for the Staff Monitoring system. Handles authentication, user ma
 
 ## Tech Stack
 
-| Purpose | Library |
-|---|---|
-| Framework | NestJS (TypeScript) |
-| Database | MySQL 8 |
-| ORM | TypeORM |
-| Auth | JWT + bcrypt |
-| File Upload | Multer (local disk) |
-| Validation | class-validator + class-transformer |
-| Scheduling | @nestjs/schedule |
+| Purpose     | Library                             |
+| ----------- | ----------------------------------- |
+| Framework   | NestJS (TypeScript)                 |
+| Database    | MySQL 8                             |
+| ORM         | TypeORM                             |
+| Auth        | JWT + bcrypt                        |
+| File Upload | Multer (local disk)                 |
+| Validation  | class-validator + class-transformer |
+| Scheduling  | @nestjs/schedule                    |
 
 ---
 
@@ -93,40 +93,44 @@ uploads/
 ## API Endpoints
 
 ### Auth
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| POST | `/api/auth/login` | Public | Login, returns JWT + user |
-| GET | `/api/auth/me` | All | Get current user from token |
+
+| Method | Endpoint          | Access | Description                 |
+| ------ | ----------------- | ------ | --------------------------- |
+| POST   | `/api/auth/login` | Public | Login, returns JWT + user   |
+| GET    | `/api/auth/me`    | All    | Get current user from token |
 
 ### Users
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| GET | `/api/users` | HRD, Admin | List users (paginated) |
-| POST | `/api/users` | HRD, Admin | Create user |
-| PATCH | `/api/users/:id` | HRD, Admin | Update user |
-| PATCH | `/api/users/:id/change-password` | HRD, Admin | Change password |
-| DELETE | `/api/users/:id` | Admin only | Delete user |
+
+| Method | Endpoint                         | Access     | Description            |
+| ------ | -------------------------------- | ---------- | ---------------------- |
+| GET    | `/api/users`                     | HRD, Admin | List users (paginated) |
+| POST   | `/api/users`                     | HRD, Admin | Create user            |
+| PATCH  | `/api/users/:id`                 | HRD, Admin | Update user            |
+| PATCH  | `/api/users/:id/change-password` | HRD, Admin | Change password        |
+| DELETE | `/api/users/:id`                 | Admin only | Delete user            |
 
 ### Attendance
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| POST | `/api/attendance/clock-in` | Staff, HRD | Clock in with photo |
-| PATCH | `/api/attendance/clock-out` | Staff, HRD | Clock out |
-| PATCH | `/api/attendance/start-break` | Staff, HRD | Start break |
-| PATCH | `/api/attendance/end-break` | Staff, HRD | End break |
-| GET | `/api/attendance/today/me` | Staff, HRD | Today's own attendance |
-| GET | `/api/attendance/team` | All | All users' current work status |
-| GET | `/api/attendance/pending` | HRD, Admin | Pending clock-in approvals |
-| PATCH | `/api/attendance/:id/approve` | HRD | Approve clock-in |
-| PATCH | `/api/attendance/:id/deny` | HRD | Deny clock-in |
-| GET | `/api/attendance/approval-history` | HRD, Admin | Approval history (paginated) |
-| GET | `/api/attendance/history` | All | Attendance history (paginated) |
-| GET | `/api/attendance/my-stats` | Staff, HRD | Personal attendance stats |
+
+| Method | Endpoint                           | Access     | Description                    |
+| ------ | ---------------------------------- | ---------- | ------------------------------ |
+| POST   | `/api/attendance/clock-in`         | Staff, HRD | Clock in with photo            |
+| PATCH  | `/api/attendance/clock-out`        | Staff, HRD | Clock out                      |
+| PATCH  | `/api/attendance/start-break`      | Staff, HRD | Start break                    |
+| PATCH  | `/api/attendance/end-break`        | Staff, HRD | End break                      |
+| GET    | `/api/attendance/today/me`         | Staff, HRD | Today's own attendance         |
+| GET    | `/api/attendance/team`             | All        | All users' current work status |
+| GET    | `/api/attendance/pending`          | HRD, Admin | Pending clock-in approvals     |
+| PATCH  | `/api/attendance/:id/approve`      | HRD        | Approve clock-in               |
+| PATCH  | `/api/attendance/:id/deny`         | HRD        | Deny clock-in                  |
+| GET    | `/api/attendance/approval-history` | HRD, Admin | Approval history (paginated)   |
+| GET    | `/api/attendance/history`          | All        | Attendance history (paginated) |
+| GET    | `/api/attendance/my-stats`         | Staff, HRD | Personal attendance stats      |
 
 ### Upload
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| POST | `/api/upload` | Staff, HRD | Upload proof photo → saves to `/uploads/temp` |
+
+| Method | Endpoint      | Access     | Description                                   |
+| ------ | ------------- | ---------- | --------------------------------------------- |
+| POST   | `/api/upload` | Staff, HRD | Upload proof photo → saves to `/uploads/temp` |
 
 Static files served at `/uploads/temp/:filename` and `/uploads/approved/:filename`.
 
@@ -135,31 +139,33 @@ Static files served at `/uploads/temp/:filename` and `/uploads/approved/:filenam
 ## Entities
 
 ### User
-| Field | Type | Notes |
-|---|---|---|
-| id | uuid | Primary key |
-| name | string | |
-| email | string | Unique |
-| password | string | bcrypt hashed |
-| role | enum | `staff`, `hrd`, `admin` |
-| workStatus | enum | `working`, `on break`, `off duty`, `pending`, `photo revision` |
-| employmentStatus | enum | `employed`, `on leave`, `terminated`, `resigned` |
+
+| Field            | Type   | Notes                                                          |
+| ---------------- | ------ | -------------------------------------------------------------- |
+| id               | uuid   | Primary key                                                    |
+| name             | string |                                                                |
+| email            | string | Unique                                                         |
+| password         | string | bcrypt hashed                                                  |
+| role             | enum   | `staff`, `hrd`, `admin`                                        |
+| workStatus       | enum   | `working`, `on break`, `off duty`, `pending`, `photo revision` |
+| employmentStatus | enum   | `employed`, `on leave`, `terminated`, `resigned`               |
 
 ### Attendance
-| Field | Type | Notes |
-|---|---|---|
-| id | uuid | Primary key |
-| userId | uuid | FK → User |
-| date | date | Working date |
-| clockInTime | timestamp | |
-| clockOutTime | timestamp | Nullable |
-| photoUrl | string | Path to proof photo |
-| approvalStatus | enum | `pending`, `approved`, `denied` |
-| approvedBy | uuid | Nullable, FK → User (HRD) |
-| totalBreakMinutes | int | Accumulated break time |
-| totalWorkingMinutes | int | Total shift duration |
-| isOnBreak | boolean | |
-| isInvalid | boolean | True if shift expired without approval |
+
+| Field               | Type      | Notes                                  |
+| ------------------- | --------- | -------------------------------------- |
+| id                  | uuid      | Primary key                            |
+| userId              | uuid      | FK → User                              |
+| date                | date      | Working date                           |
+| clockInTime         | timestamp |                                        |
+| clockOutTime        | timestamp | Nullable                               |
+| photoUrl            | string    | Path to proof photo                    |
+| approvalStatus      | enum      | `pending`, `approved`, `denied`        |
+| approvedBy          | uuid      | Nullable, FK → User (HRD)              |
+| totalBreakMinutes   | int       | Accumulated break time                 |
+| totalWorkingMinutes | int       | Total shift duration                   |
+| isOnBreak           | boolean   |                                        |
+| isInvalid           | boolean   | True if shift expired without approval |
 
 ---
 
@@ -187,22 +193,90 @@ Seeds: 1 admin, 3 HRD, 20 staff, and 30 days of attendance history. Re-running t
 
 **Default credentials:**
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | admin@company.com | admin123 |
-| HRD | hrd1@company.com | hrd123 |
+| Role  | Email              | Password |
+| ----- | ------------------ | -------- |
+| Admin | admin@company.com  | admin123 |
+| HRD   | hrd1@company.com   | hrd123   |
 | Staff | staff1@company.com | staff123 |
 
 ---
 
-## Docker
+## Running with Docker
+
+If you want to run the full stack (frontend + backend + database) together, create a `docker-compose.yml` in your root folder with both repos cloned alongside each other:
+
+```
+root/
+├── monitoring-app-react/     ← this repo
+├── monitoring-app-nest/      ← backend repo
+└── docker-compose.yml        ← create this
+```
+
+```yaml
+services:
+  frontend:
+    build:
+      context: ./monitoring-app-react
+    container_name: monitoring_frontend
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./monitoring-app-react:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    environment:
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./monitoring-app-nest
+    container_name: monitoring_backend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./monitoring-app-nest:/app
+      - ./monitoring-app-nest/uploads:/app/uploads
+      - /app/node_modules
+    command: npm run start:dev
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: yourpassword
+      DB_NAME: monitoring_app
+      JWT_SECRET: your_jwt_secret_here
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: monitoring_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: monitoring_app
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+```
+
+Then run:
 
 ```bash
-# Run with Docker Compose (from project root)
 docker-compose up -d --build
 ```
 
 The `uploads/` folder is mounted as a volume so uploaded files persist across container restarts:
+
 ```yaml
 volumes:
   - ./monitoring-app-nest/uploads:/app/uploads
